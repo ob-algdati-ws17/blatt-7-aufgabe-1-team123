@@ -5,7 +5,7 @@ compliler: gcc
 
 script:
   - mkdir build
-  - cmake ..
+  - cmake CMakeLists.txt
   - make
 #  - pwd && make test
 
