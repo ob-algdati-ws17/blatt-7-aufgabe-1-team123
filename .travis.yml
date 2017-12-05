@@ -7,12 +7,12 @@ compliler:
 script_before:
   - mkdir build
   - cd build
-  - cd ..
+  - cmake ..
 
 script: make
 
-#after_success:
+after_success:
 #  - cd build
-#  - make test
+  - make test
 
 
