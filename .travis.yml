@@ -8,8 +8,9 @@ script_before:
   - mkdir build
   - cd build
   - cmake ..
+  - make
 
-script: make
+#script: make
 
 after_success:
 #  - cd build
