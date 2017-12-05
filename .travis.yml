@@ -5,9 +5,8 @@ compliler: gcc
 
 script:
   - mkdir build
-  - cd build
-  - pwd && cmake ..
-  - pwd && make
+  - cd build && cmake ..
+  - cd build && make
 #  - pwd && make test
 
 
