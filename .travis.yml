@@ -12,8 +12,8 @@ script_before:
 script:
   make
 
-after_success:
-  - cd build
-  - make test
+#after_success:
+#  - cd build
+#  - make test
 
 
