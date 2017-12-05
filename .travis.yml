@@ -1,13 +1,13 @@
 language: cpp
 
-compliler: gcc
+compliler: clang
 
 
 script:
   - mkdir build
-  - cmake CMakeLists.txt
+  - cd build
+  - cmake ..
   - make
-#  - pwd && make test
 
 
 
