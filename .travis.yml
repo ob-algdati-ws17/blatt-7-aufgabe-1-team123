@@ -1,16 +1,15 @@
 language: cpp
 
 compliler:
-  - clang
+  - gcc
 
 
 script_before:
-  - md build
+  - mkdir build
   - cd build
   - cd ..
 
-script:
-  make
+script: make
 
 #after_success:
 #  - cd build
