@@ -1,18 +1,19 @@
-language: c++
+language: cpp
 
 compliler:
-  - clang
+  - gcc
 
-script:
-  make
 
 script_before:
-  - md build
+  - mkdir build
   - cd build
-  - cd ..
+  - cmake ..
+  - make
+
+#script: make
 
 after_success:
-  - cd build
+#  - cd build
   - make test
 
 
