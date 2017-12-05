@@ -3,4 +3,16 @@ language: c++
 compliler:
   - clang
 
+script:
+  make
+
+script_before:
+  - md build
+  - cd build
+  - cd ..
+
+after_success:
+  - cd build
+  - make test
+
 
