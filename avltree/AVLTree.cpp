@@ -35,6 +35,21 @@ bool AVLTree::search(const int value) const {
     return false;
 }
 
+int AVLTree::getBalance(const int value) {
+    return AVLTree::finde(value)->balance;
+}
+
+AVLTree::Node* AVLTree::find(const int value){
+    if(search(value)){
+        auto current = root;
+        while(current != nullptr) {
+            if(current->key == value) return current;
+            if(current->key < value) current = current->right;
+            if(current->key > value) current = current->left;
+        }
+    }else return nullptr;
+}
+
 /********************************************************************
  * Insert
  *******************************************************************/
