@@ -41,26 +41,107 @@ bool AVLTree::search(const int value) const {
  *******************************************************************/
 
 void AVLTree::insert(const int value) {
-    Node *previous = nullptr;
+    vector<Node *> *calllist = new vector<Node *>();
+
     Node *current = root;
     while (current != nullptr) {
         if (current->key == value) {
             return;
         } else if (current->key > value) {
-            previous = current;
+            calllist->push_back(current);
             current = current->left;
         } else {
-            previous = current;
+            calllist->push_back(current);
             current = current->right;
         }
     }
 
-    if (previous == nullptr) {
+    if (calllist->empty()) {
+        // Insert in empty tree
         root = new Node(value);
-    } else if (previous->key > value) {
-        previous->left = new Node(value);
-    } else {
-        previous->right = new Node(value);
+    }
+    else {
+        // Insert with previous
+        if (calllist->back()->balance == +1) {
+            // Right subtree was one higher, insert at the left -> both subtrees have equal height
+            calllist->back()->left = new Node(value);
+            calllist->back()->balance = 0;
+        }
+        else if (calllist->back()->balance == -1) {
+            // Left subtree was one higher, insert at the right -> both subtrees have equal height
+            calllist->back()->right = new Node(value);
+            calllist->back()->balance = 0;
+        }
+        else {
+            // Both subtrees had equal height
+            if (value > calllist->back()->key) {
+                // Insert at right
+                calllist->back()->right = new Node(value);
+                calllist->back()->balance = +1;
+            }
+            else {
+                // Insert at left
+                calllist->back()->left = new Node(value);
+                calllist->back()->balance = -1;
+            }
+            calllist->back()->upin(calllist);
+        }
+
+
+    }
+    delete(calllist);
+}
+
+void AVLTree::Node::upin(vector<Node *> *calllist) {
+    Node *p = calllist->back();
+    calllist->erase(calllist->begin() + calllist->size() - 1);
+    if (calllist->size() > 0) { // else root already reached
+
+        if (p == calllist->back()->left && calllist->back()->balance == +1) {
+            // Insert in left subtree, right was one larger -> both subtrees have equal height
+            calllist->back()->balance = 0;
+            upin(calllist);
+        }
+        else if (p == calllist->back()->left && calllist->back()->balance == 0) {
+            // Insert in left subtree, both had equal height -> left is one higher
+            calllist->back()->balance = -1;
+        }
+        else if (p == calllist->back()->left && calllist->back()->balance == -1) {
+            // Insert in left subtree, left was already one higher -> rotation
+            Node *pp = calllist->back();
+
+            if (p->balance == -1) {
+                // Right rotation
+                if (calllist->back()->left == pp)
+                    calllist->back()->left = p;
+                else
+                    calllist->back()->right = p;
+
+                pp->left = p->right;
+                p->right = pp;
+
+                p->balance = 0;
+                pp->balance = 0;
+            }
+            else {
+                // Left-Right roatation
+                Node *pRight = p->right;
+                if (calllist->back()->left == pp)
+                    calllist->back()->left = pRight;
+                else
+                    calllist->back()->right = pRight;
+
+                pp->left = pRight->right;
+                p->right = pRight->left;
+                pRight->left = p;
+                pRight->right = pp;
+
+                pRight->balance = 0;
+                p->balance = p->right->height() - p->left->height();
+                pp->balance = pp->right->height() - pp->left->height();
+            }
+
+        }
     }
 }
 
@@ -245,4 +326,16 @@ std::ostream &operator<<(std::ostream &os, const AVLTree &tree) {
     }
     os << "}" << endl;
     return os;
+}
+
+
+int AVLTree::Node::height() {
+    if (left == nullptr && right == nullptr)
+        return 0;
+    else if (left == nullptr && right != nullptr)
+        return right->height() + 1;
+    else if (left != nullptr && right == nullptr)
+        return left->height() + 1;
+    else
+        return max(left->height(), right->height()) + 1;
 }
