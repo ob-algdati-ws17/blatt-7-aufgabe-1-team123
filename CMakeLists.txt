@@ -33,6 +33,8 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 add_subdirectory(${CMAKE_BINARY_DIR}/googletest-src
         ${CMAKE_BINARY_DIR}/googletest-build)
 
-#add_subdirectory(test)
+add_subdirectory(test)
 
 enable_testing()
+
+add_test(testAVLTree test/testAVLTree --gtest_output=xml:report.xml)
