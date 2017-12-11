@@ -139,9 +139,9 @@ TEST(AVLTreeTest, Seven_Nodes_Random_Input) {
     EXPECT_EQ(b.getBalance(4), 0);
     EXPECT_EQ(b.getBalance(2), 0);
     EXPECT_EQ(b.getBalance(6), 0);
-    EXPECT_THAT(*b.preorder(), testing::ElementsAre()); //w,l,r
-    EXPECT_THAT(*b.inorder(), testing::ElementsAre()); //l, w r
-    EXPECT_THAT(*b.postorder(), testing::ElementsAre()); //l,r,w
+    EXPECT_THAT(*b.preorder(), testing::ElementsAre(4,2,1,3,6,5,7)); //w,l,r
+    EXPECT_THAT(*b.inorder(), testing::ElementsAre(1,2,3,4,5,6,7)); //l,w,r
+    EXPECT_THAT(*b.postorder(), testing::ElementsAre(1,3,2,5,7,6,4)); //l,r,w
 }
 
 // insert, remove and search
