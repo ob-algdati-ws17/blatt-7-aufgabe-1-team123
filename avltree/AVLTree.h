@@ -45,6 +45,10 @@ public:
 
     friend ostream &operator<<(ostream &, const AVLTree &);
 
+    int getBalance(const int);
+
+    Node* finde(const int);
+
 };
 
 #endif //TREES_AVLTREE_H
