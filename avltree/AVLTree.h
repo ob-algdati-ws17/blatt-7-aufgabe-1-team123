@@ -14,9 +14,12 @@ private:
         const int key;
         Node *left = nullptr;
         Node *right = nullptr;
+        int balance = 0;
         Node(const int);
         Node(const int, Node *, Node *);
         ~Node();
+        void upin(vector<Node *> *);
+        int height();
         vector<int> *preorder() const;  // (Hauptreihenfolge)
         vector<int> *inorder() const;   // (Symmetrische Reihenfolge)
         vector<int> *postorder() const; // (Nebenreihenfolge)
