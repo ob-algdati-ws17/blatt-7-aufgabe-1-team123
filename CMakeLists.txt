@@ -3,7 +3,7 @@ project(AVLTree)
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(SOURCE_FILES Main.cpp AVLTree.h)
+set(SOURCE_FILES Main.cpp)
 add_executable(Main ${SOURCE_FILES})
 
 #target_link_libraries(Main)
