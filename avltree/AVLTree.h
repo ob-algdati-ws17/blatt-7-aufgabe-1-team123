@@ -2,7 +2,9 @@
 #define TREES_AVLTREE_H
 
 #include <iostream>
+#include <list>
 #include <vector>
+#include <functional>
 
 using namespace std;
 
@@ -18,7 +20,7 @@ private:
         Node(const int);
         Node(const int, Node *, Node *);
         ~Node();
-        void upin(vector<Node *> *);
+        void upin(list<Node *> *, AVLTree *, int depth);
         int height();
         vector<int> *preorder() const;  // (Hauptreihenfolge)
         vector<int> *inorder() const;   // (Symmetrische Reihenfolge)
