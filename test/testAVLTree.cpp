@@ -152,6 +152,7 @@ TEST(AVLTreeTest, One_Node_Insert_Remove) {
     EXPECT_TRUE(b.search(12213));
     EXPECT_FALSE(b.search(123));
     EXPECT_FALSE(b.search(-123));
+    EXPECT_EQ(b.getBalance(4), 0);
     EXPECT_THAT(*b.preorder(), testing::ElementsAre(12213));
     EXPECT_THAT(*b.inorder(), testing::ElementsAre(12213));
     EXPECT_THAT(*b.postorder(), testing::ElementsAre(12213));
