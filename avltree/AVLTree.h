@@ -47,7 +47,7 @@ public:
 
     int getBalance(const int);
 
-    Node* finde(const int);
+    Node* find(const int);
 
 };
 

@@ -36,7 +36,7 @@ bool AVLTree::search(const int value) const {
 }
 
 int AVLTree::getBalance(const int value) {
-    return AVLTree::finde(value)->balance;
+    return find(value)->balance;
 }
 
 AVLTree::Node* AVLTree::find(const int value){
