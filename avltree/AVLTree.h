@@ -7,13 +7,29 @@
 #include <functional>
 
 using namespace std;
-
+/**
+ * An AVL Tree is a  self-balancing binary search tree.
+ * This container class saves elements called nodes with integer values.
+ * In the left part of the tree, the values are smaller than the root and in the right part they are bigger.
+ */
 class AVLTree {
 
 private:
-
+    /**
+     * Nodes are the elements saved in the AVL Tree and
+     * the purpose of one node is to save exactly one integer value.
+     * Futher, every node knows his two sons called right and left node.
+     * If a node is a leaf, the sons are nullpointer.
+     */
     struct Node {
+        /**
+         * The key value this node contains.
+         * By this value the node is put into the tree.
+         */
         const int key;
+        /**
+         *
+         */
         Node *left = nullptr;
         Node *right = nullptr;
         int balance = 0;
@@ -48,7 +64,6 @@ public:
     int getBalance(const int);
 
     Node* find(const int);
-
 };
 
 #endif //TREES_AVLTREE_H
