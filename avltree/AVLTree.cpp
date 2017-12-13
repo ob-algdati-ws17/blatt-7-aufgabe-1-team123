@@ -172,7 +172,8 @@ void AVLTree::Node::upin(bool leftGrowed) {
 
         // Make t2 to left follower of y
         y->left = t2;
-        t2->previous = y;
+        if (t2 != nullptr)
+            t2->previous = y;
 
         // Update balance
         y->balance = 0;
@@ -212,7 +213,8 @@ void AVLTree::Node::upin(bool leftGrowed) {
 
         // Make t2 to right follower of y
         y->right = t2;
-        t2->previous = y;
+        if (t2 != nullptr)
+            t2->previous = y;
 
         // Update balance
         y->balance = 0;
@@ -254,7 +256,8 @@ void AVLTree::Node::upin(bool leftGrowed) {
 
         // Make t3 to left follower of z
         z->left = t3;
-        t3->previous = z;
+        if (t3 != nullptr)
+            t3->previous = z;
 
         // Make x/this to left follower of y
         y->left = this;
@@ -262,12 +265,27 @@ void AVLTree::Node::upin(bool leftGrowed) {
 
         // Make t2 to right follower of x/this
         this->right = t2;
-        t2->previous = this;
+        if (t1 != nullptr)
+            t2->previous = this;
 
         // Update balance factor
         y->balance = 0;
-        this->balance = this->right->height() - this->left->height();
-        z->balance = z->right->height() - z->left->height();
+
+        int heightleft = 0;
+        if (this->left != nullptr)
+            heightleft = this->left->height() + 1;
+        int heightright = 0;
+        if (this->right != nullptr)
+            heightright = this->right->height() + 1;
+        this->balance = heightright - heightleft;
+
+        heightleft = 0;
+        if (z->left != nullptr)
+            heightleft = z->left->height() + 1;
+        heightright = 0;
+        if (z->right != nullptr)
+            heightright = z->right->height() + 1;
+        z->balance = heightright - heightleft;
     }
     else if (!isLeftFollower() && previous->balance == +1 && balance == -1 && leftGrowed) {
         // Both subrees of this node had equal hight + left subtree growed
@@ -305,7 +323,8 @@ void AVLTree::Node::upin(bool leftGrowed) {
 
         // Make t3 to right follower of z
         z->right = t3;
-        t3->previous = z;
+        if (t3 != nullptr)
+            t3->previous = z;
 
         // Make x/this to right follower of y
         y->right = this;
@@ -313,12 +332,27 @@ void AVLTree::Node::upin(bool leftGrowed) {
 
         // Make t2 to left follower of x/this
         this->left = t2;
-        t2->previous = this;
+        if (t2 != nullptr)
+            t2->previous = this;
 
         // Update balance factor
         y->balance = 0;
-        this->balance = this->right->height() - this->left->height();
-        z->balance = z->right->height() - z->left->height();
+
+        int heightleft = 0;
+        if (this->left != nullptr)
+            heightleft = this->left->height() + 1;
+        int heightright = 0;
+        if (this->right != nullptr)
+            heightright = this->right->height() + 1;
+        this->balance = heightright - heightleft;
+
+        heightleft = 0;
+        if (z->left != nullptr)
+            heightleft = z->left->height() + 1;
+        heightright = 0;
+        if (z->right != nullptr)
+            heightright = z->right->height() + 1;
+        z->balance = heightright - heightleft;
     }
     else
         throw "Invalid upin call";
