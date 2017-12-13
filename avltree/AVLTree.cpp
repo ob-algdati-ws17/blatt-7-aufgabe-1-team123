@@ -2,9 +2,9 @@
 
 using namespace ::std;
 
-AVLTree::Node::Node(const int k) : key(k) {}
+AVLTree::Node::Node(const int k, AVLTree *t) : key(k), tree(t) {}
 
-AVLTree::Node::Node(const int k, Node * l, Node * r) : key(k), left(l), right(r) {}
+AVLTree::Node::Node(const int k, Node *p, Node *l, Node *r, AVLTree *t) : key(k), previous(p), left(l), right(r), tree(t) {}
 
 AVLTree::Node::~Node() {
     delete(left);
@@ -55,120 +55,273 @@ AVLTree::Node* AVLTree::find(const int value){
  *******************************************************************/
 
 void AVLTree::insert(const int value) {
-    list<Node *> calllist = list<Node *>();
-
-    Node *current = root;
-    while (current != nullptr) {
-        if (current->key == value) {
-            return;
-        } else if (current->key > value) {
-            calllist.push_back(current);
-            current = current->left;
-        } else {
-            calllist.push_back(current);
-            current = current->right;
-        }
-    }
-
-    if (calllist.empty()) {
+    if (root == nullptr) {
         // Insert in empty tree
-        root = new Node(value);
+        root = new Node(value, nullptr, nullptr, nullptr, this);
     }
     else {
-        // Insert with previous
-        if (calllist.back()->balance == +1) {
-            // Right subtree was one higher, insert at the left -> both subtrees have equal height
-            calllist.back()->left = new Node(value);
-            calllist.back()->balance = 0;
-        }
-        else if (calllist.back()->balance == -1) {
-            // Left subtree was one higher, insert at the right -> both subtrees have equal height
-            calllist.back()->right = new Node(value);
-            calllist.back()->balance = 0;
-        }
-        else {
-            // Both subtrees had equal height
-            if (value > calllist.back()->key) {
-                // Insert at right
-                calllist.back()->right = new Node(value);
-                calllist.back()->balance = +1;
+        Node *previous = nullptr;
+        Node *current = root;
+        bool insertAtleft = true; //left = true / right = false
+        while (current != nullptr) {
+            // Until we are at the leave (current) we replace
+            // previous is than the predecessor of the leave
+            if (current->key == value)
+                return;
+            else if (value < current->key) {
+                previous = current;
+                current = current->left;
+                insertAtleft = true;
             }
             else {
-                // Insert at left
-                calllist.back()->left = new Node(value);
-                calllist.back()->balance = -1;
+                previous = current;
+                current = current->right;
+                insertAtleft = false;
             }
-            calllist.back()->upin(&calllist, this, calllist.size());
         }
+
+
+        auto newNode = new Node(value, previous, nullptr, nullptr, this);
+        // ****************** both subtrees get equal height ***************
+        if (previous->balance == +1 && insertAtleft) {
+            previous->left = newNode;
+            previous->balance = 0;
+        }
+        else if (previous->balance == -1 && !insertAtleft) {
+            previous->right = newNode;
+            previous->balance = 0;
+        }
+        // ********* subtrees had equal height, one subtree grows now *********
+        else if (previous->balance == 0 && insertAtleft) {
+            previous->left = newNode;
+            previous->balance = -1;
+            previous->upin(true);
+        }
+        else if (previous->balance == 0 && !insertAtleft) {
+            previous->right = newNode;
+            previous->balance = +1;
+            previous->upin(false);
+        }
+        else
+            throw "Invalid insert";
+
     }
 }
 
-void AVLTree::Node::upin(list<Node *> *calllist, AVLTree *tree, int depth) {
-    auto itCalllist = calllist->begin();
-    int i = 1;
-    Node *p = *calllist->begin();
-    Node *pp = nullptr;
-    Node *ppp = nullptr;
-    while (i < depth) {
-        itCalllist++;
-        i++;
-        ppp = pp;
-        pp = p;
-        p = *itCalllist;
+void AVLTree::Node::upin(bool leftGrowed) {
+    if (balance == 0 || isRoot())
+        return;
+
+    // ********** both subtrees of previous get equal height *************
+    if ((isLeftFollower() && previous->balance == +1)
+        || (!isLeftFollower() && previous->balance == -1)) {
+        // Subtree whose root is this node was one smaller than
+        // the other subtree of the previous node of this node
+        // This subtree growed -> both subtress have equal height
+        previous->balance = 0;
     }
-
-    if (p == calllist->back()->left && calllist->back()->balance == +1) {
-        // Insert in left subtree, right was one larger -> both subtrees have equal height
-        calllist->back()->balance = 0;
-        upin(calllist, tree, depth - 1);
+    // *** subtrees of previous had equal height, one subtree grows now ***
+    else if (isLeftFollower() && previous->balance == 0) {
+        // Subtree whose root is this node had equal theight as
+        // the other subtree of the previous node of this node
+        // This is the left subtree.
+        // This subree growed -> left subtree is one heigher
+        previous->balance = -1;
+        previous->upin(true);
     }
-    else if (p == calllist->back()->left && calllist->back()->balance == 0) {
-        // Insert in left subtree, both had equal height -> left is one higher
-        calllist->back()->balance = -1;
+    else if (!isLeftFollower() && previous->balance == 0) {
+        // Subtree whose root is this node had equal theight as
+        // the other subtree of the previous node of this node
+        // This is the right subtree.
+        // This subree growed -> right subtree is one heigher
+        previous->balance = +1;
+        previous->upin(false);
     }
-    else if (p == calllist->back()->left && calllist->back()->balance == -1) {
-        // Insert in left subtree, left was already one higher -> rotation
+    // ******* subtrees of previous which was one higher grows *******
+    else if (isLeftFollower() && previous->balance == -1 && balance == -1 && leftGrowed) {
+        // Both subrees of this node had equal hight + left subtree growed
+        // -> the tree whose root is this node growed
+        // This node/subtree is the left follower of the previous node +
+        // this subtree was one heigher than the right subtree
+        // -> this subtree would now be two heigher -> Right Rotation
 
-        if (p->balance == -1) {
-            // Right rotation
-            if (ppp == nullptr)
-                tree->root = p;
-            else {
-                if (ppp->left == pp)
-                    ppp->left = p;
-                else
-                    ppp->right = p;
-            }
+        // Node corespond to the script
+        Node *prePrevious = previous->previous;
+        Node *y = previous;
+        // x is this node
+        Node *t1 = left;
+        Node *t2 = right;
+        Node *t3 = y->right;
 
-            pp->left = p->right;
-            p->right = pp;
-
-            p->balance = 0;
-            pp->balance = 0;
+        // Connection to the subtree looked at
+        if (prePrevious == nullptr) {
+            // -> previous/y is root
+            tree->root = this;
         }
         else {
-            // Left-Right roatation
-            Node *pRight = p->right;
-            if (ppp == nullptr)
-                tree->root = pRight;
-            else {
-                if (ppp->left == pp)
-                    ppp->left = pRight;
-                else
-                    ppp->right = pRight;
-            }
-
-            pp->left = pRight->right;
-            p->right = pRight->left;
-            pRight->left = p;
-            pRight->right = pp;
-
-            pRight->balance = 0;
-            p->balance = p->right->height() - p->left->height();
-            pp->balance = pp->right->height() - pp->left->height();
+            if (y->isLeftFollower())
+                prePrevious->left = this;
+            else
+                prePrevious->right = this;
         }
+        this->previous = prePrevious;
 
+        // Make y to right follower of x
+        this->right = y;
+        y->previous = this;
+
+        // Make t2 to left follower of y
+        y->left = t2;
+        t2->previous = y;
+
+        // Update balance
+        y->balance = 0;
+        this->balance = 0;
     }
+    else if (!isLeftFollower() && previous->balance == +1 && balance == +1 && !leftGrowed) {
+        // Both subrees of this node had equal hight + right subtree growed
+        // -> the tree whose root is this node growed
+        // This node/subtree is the right follower of the previous node +
+        // this subtree was one heigher than the left subtree
+        // -> this subtree would now be two heigher -> Left Rotation
+
+        // Node corespond to the script
+        Node *prePrevious = previous->previous;
+        Node *y = previous;
+        // x is this node
+        Node *t1 = right;
+        Node *t2 = left;
+        Node *t3 = y->left;
+
+        // Connection to the subtree looked at
+        if (prePrevious == nullptr) {
+            // -> previous/y is root
+            tree->root = this;
+        }
+        else {
+            if (y->isLeftFollower())
+                prePrevious->left = this;
+            else
+                prePrevious->right = this;
+        }
+        this->previous = prePrevious;
+
+        // Make y to left follower of x
+        this->left = y;
+        y->previous = this;
+
+        // Make t2 to right follower of y
+        y->right = t2;
+        t2->previous = y;
+
+        // Update balance
+        y->balance = 0;
+        this->balance = 0;
+    }
+    else if (isLeftFollower() && previous->balance == -1 && balance == +1 && !leftGrowed) {
+        // Both subrees of this node had equal hight + right subtree growed
+        // -> the tree whose root is this node growed
+        // This node/subtree is the left follower of the previous node +
+        // this subtree was one heigher than the right subtree
+        // -> this subtree would now be two heigher -> Left-Right Rotation
+
+        // Node corespond to the script
+        Node *prePrevious = previous->previous;
+        Node *z = previous;
+        // x is this node
+        Node *y = right;
+        Node *t1 = left;
+        Node *t2 = y->left;
+        Node *t3 = y->right;
+        Node *t4 = z->right;
+
+        // Connection to the subtree looked at
+        if (prePrevious == nullptr) {
+            // -> previous/y is root
+            tree->root = y;
+        }
+        else {
+            if (z->isLeftFollower())
+                prePrevious->left = y;
+            else
+                prePrevious->right = y;
+        }
+        y->previous = prePrevious;
+
+        // Make z to right follower of y
+        y->right = z;
+        z->previous = y;
+
+        // Make t3 to left follower of z
+        z->left = t3;
+        t3->previous = z;
+
+        // Make x/this to left follower of y
+        y->left = this;
+        this->previous = y;
+
+        // Make t2 to right follower of x/this
+        this->right = t2;
+        t2->previous = this;
+
+        // Update balance factor
+        y->balance = 0;
+        this->balance = this->right->height() - this->left->height();
+        z->balance = z->right->height() - z->left->height();
+    }
+    else if (!isLeftFollower() && previous->balance == +1 && balance == -1 && leftGrowed) {
+        // Both subrees of this node had equal hight + left subtree growed
+        // -> the tree whose root is this node growed
+        // This node/subtree is the right follower of the previous node +
+        // this subtree was one heigher than the left subtree
+        // -> this subtree would now be two heigher -> Right-Left Rotation
+
+        // Node corespond to the script
+        Node *prePrevious = previous->previous;
+        Node *z = previous;
+        // x is this node
+        Node *y = left;
+        Node *t1 = right;
+        Node *t2 = y->right;
+        Node *t3 = y->left;
+        Node *t4 = z->left;
+
+        // Connection to the subtree looked at
+        if (prePrevious == nullptr) {
+            // -> previous/y is root
+            tree->root = y;
+        }
+        else {
+            if (z->isLeftFollower())
+                prePrevious->left = y;
+            else
+                prePrevious->right = y;
+        }
+        y->previous = prePrevious;
+
+        // Make z to left follower of y
+        y->left = z;
+        z->previous = y;
+
+        // Make t3 to right follower of z
+        z->right = t3;
+        t3->previous = z;
+
+        // Make x/this to right follower of y
+        y->right = this;
+        this->previous = y;
+
+        // Make t2 to left follower of x/this
+        this->left = t2;
+        t2->previous = this;
+
+        // Update balance factor
+        y->balance = 0;
+        this->balance = this->right->height() - this->left->height();
+        z->balance = z->right->height() - z->left->height();
+    }
+    else
+        throw "Invalid upin call";
 }
 
 /********************************************************************
@@ -235,12 +388,12 @@ void AVLTree::remove(const int value) {
         remove(keySymFollower);
 
         if (previous == nullptr) {
-            root = new Node(keySymFollower, current->left, current->right);
+            //root = new Node(keySymFollower, current->left, current->right);
         }
         else if (previous->left == current) {
-            previous->left = new Node(keySymFollower, current->left, current->right);
+            //previous->left = new Node(keySymFollower, current->left, current->right);
         } else {
-            previous->right = new Node(keySymFollower, current->left, current->right);
+            //previous->right = new Node(keySymFollower, current->left, current->right);
         }
     }
     current->left = nullptr;
@@ -354,6 +507,14 @@ std::ostream &operator<<(std::ostream &os, const AVLTree &tree) {
     return os;
 }
 
+
+bool AVLTree::Node::isRoot() {
+    return previous == nullptr;
+}
+
+bool AVLTree::Node::isLeftFollower() {
+    return previous->left == this;
+}
 
 int AVLTree::Node::height() {
     if (left == nullptr && right == nullptr)

@@ -30,13 +30,17 @@ private:
         /**
          *
          */
+        Node *previous = nullptr;
         Node *left = nullptr;
         Node *right = nullptr;
         int balance = 0;
-        Node(const int);
-        Node(const int, Node *, Node *);
+        AVLTree *tree = nullptr;
+        Node(const int k, AVLTree *t);
+        Node(const int k, Node *p, Node *l, Node *r, AVLTree *t);
         ~Node();
-        void upin(list<Node *> *, AVLTree *, int depth);
+        void upin(bool growedLeft);
+        bool isRoot();
+        bool isLeftFollower();
         int height();
         vector<int> *preorder() const;  // (Hauptreihenfolge)
         vector<int> *inorder() const;   // (Symmetrische Reihenfolge)
