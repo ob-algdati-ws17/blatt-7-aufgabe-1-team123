@@ -14,7 +14,7 @@ TEST(AVLTreeTest, Empty_Tree) {
 
 // insert and search
 
-TEST(AVLTreeTest, One_Node) {
+TEST(AVLTreeTest, Insert_In_Empty_Tree) {
     AVLTree b;
     b.insert(12213);
     EXPECT_TRUE(b.search(12213));
@@ -40,7 +40,23 @@ TEST(AVLTreeTest, Two_Nodes) {
     EXPECT_THAT(*b.postorder(), testing::ElementsAre(215, 12213));
 }
 
-TEST(AVLTreeTest, Three_Nodes) {
+TEST(AVLTreeTest, Insert_bal_plus_eins_FALL_1) {
+    AVLTree b;
+    b.insert(12213);
+    b.insert(123712);
+    b.insert(215);
+    EXPECT_EQ(b.getBalance(12213), 0);
+    EXPECT_EQ(b.getBalance(215), 0);
+    EXPECT_EQ(b.getBalance(123712), 0);
+    EXPECT_TRUE(b.search(12213));
+    EXPECT_TRUE(b.search(123712));
+    EXPECT_TRUE(b.search(215));
+    EXPECT_THAT(*b.preorder(), testing::ElementsAre(12213, 215, 123712));
+    EXPECT_THAT(*b.inorder(), testing::ElementsAre(215, 12213, 123712));
+    EXPECT_THAT(*b.postorder(), testing::ElementsAre(215, 123712, 12213));
+}
+
+TEST(AVLTreeTest, Insert_bal_minus_eins_FALL_2) {
     AVLTree b;
     b.insert(12213);
     b.insert(215);
@@ -56,7 +72,41 @@ TEST(AVLTreeTest, Three_Nodes) {
     EXPECT_THAT(*b.postorder(), testing::ElementsAre(215, 123712, 12213));
 }
 
-TEST(AVLTreeTest, Three_Nodes_In_Row_Down) {
+TEST(AVLTreeTest, Insert_bal_null_eins_FALL_1_1) {
+    AVLTree b;
+    b.insert(12213);
+    b.insert(215);
+    b.insert(123712);
+    b.insert(1237127);
+    b.insert(12);
+    EXPECT_EQ(b.getBalance(12213), 0);
+    EXPECT_EQ(b.getBalance(123712), 1);
+    EXPECT_EQ(b.getBalance(215), -1);
+    EXPECT_EQ(b.getBalance(12), 0);
+    EXPECT_EQ(b.getBalance(1237127), 0);
+    EXPECT_THAT(*b.preorder(), testing::ElementsAre(12213, 215, 12, 123712, 1237127));
+    EXPECT_THAT(*b.inorder(), testing::ElementsAre(12, 215, 12213, 123712, 1237127));
+    EXPECT_THAT(*b.postorder(), testing::ElementsAre(12, 215, 1237127, 123712, 12213));
+}
+
+TEST(AVLTreeTest, Insert_bal_null_eins_FALL_1_2) {
+    AVLTree b;
+    b.insert(12213);
+    b.insert(215);
+    b.insert(123712);
+    b.insert(12);
+    EXPECT_EQ(b.getBalance(12213), -1);
+    EXPECT_EQ(b.getBalance(123712), 0);
+    EXPECT_EQ(b.getBalance(215), -1);
+    EXPECT_EQ(b.getBalance(12), 0);
+    EXPECT_THAT(*b.preorder(), testing::ElementsAre(12213, 215, 12, 123712));
+    EXPECT_THAT(*b.inorder(), testing::ElementsAre(12, 215, 12213, 123712));
+    EXPECT_THAT(*b.postorder(), testing::ElementsAre(12, 215, 123712, 12213));
+}
+
+
+
+TEST(AVLTreeTest, Insert_bal_null_eins_FALL_1_3_1) {
     AVLTree b;
     b.insert(123712);
     EXPECT_EQ(b.getBalance(123712), 0);
@@ -64,6 +114,83 @@ TEST(AVLTreeTest, Three_Nodes_In_Row_Down) {
     EXPECT_EQ(b.getBalance(123712), -1);
     EXPECT_EQ(b.getBalance(12213), 0);
     b.insert(215);
+    EXPECT_EQ(b.getBalance(12213), 0);
+    EXPECT_EQ(b.getBalance(215), 0);
+    EXPECT_EQ(b.getBalance(123712), 0);
+    EXPECT_TRUE(b.search(12213));
+    EXPECT_TRUE(b.search(123712));
+    EXPECT_TRUE(b.search(215));
+    EXPECT_THAT(*b.preorder(), testing::ElementsAre(12213, 215, 123712));
+    EXPECT_THAT(*b.inorder(), testing::ElementsAre(215, 12213, 123712));
+    EXPECT_THAT(*b.postorder(), testing::ElementsAre(215, 123712, 12213));
+}
+
+TEST(AVLTreeTest, Insert_bal_null_eins_FALL_1_3_2) {
+    AVLTree b;
+    b.insert(123712);
+    b.insert(215);
+    b.insert(12213);
+    EXPECT_EQ(b.getBalance(12213), 0);
+    EXPECT_EQ(b.getBalance(215), 0);
+    EXPECT_EQ(b.getBalance(123712), 0);
+    EXPECT_TRUE(b.search(12213));
+    EXPECT_TRUE(b.search(123712));
+    EXPECT_TRUE(b.search(215));
+    EXPECT_THAT(*b.preorder(), testing::ElementsAre(12213, 215, 123712));
+    EXPECT_THAT(*b.inorder(), testing::ElementsAre(215, 12213, 123712));
+    EXPECT_THAT(*b.postorder(), testing::ElementsAre(215, 123712, 12213));
+}
+
+TEST(AVLTreeTest, Insert_bal_null_eins_FALL_2_1) {
+    AVLTree b;
+    b.insert(12213);
+    b.insert(215);
+    b.insert(123712);
+    b.insert(12);
+    b.insert(1237127);
+    EXPECT_EQ(b.getBalance(12213), 0);
+    EXPECT_EQ(b.getBalance(123712), 1);
+    EXPECT_EQ(b.getBalance(215), -1);
+    EXPECT_EQ(b.getBalance(12), 0);
+    EXPECT_EQ(b.getBalance(1237127), 0);
+    EXPECT_THAT(*b.preorder(), testing::ElementsAre(12213, 215, 12, 123712, 1237127));
+    EXPECT_THAT(*b.inorder(), testing::ElementsAre(12, 215, 12213, 123712, 1237127));
+    EXPECT_THAT(*b.postorder(), testing::ElementsAre(12, 215, 1237127, 123712, 12213));
+}
+
+TEST(AVLTreeTest, Insert_bal_null_eins_FALL_2_2) {
+    AVLTree b;
+    b.insert(12213);
+    b.insert(215);
+    b.insert(123712);
+    b.insert(127541248);
+    EXPECT_EQ(b.getBalance(12213), 1);
+    EXPECT_EQ(b.getBalance(123712), 1);
+    EXPECT_EQ(b.getBalance(215), 0);
+    EXPECT_EQ(b.getBalance(127541248), 0);
+    EXPECT_THAT(*b.preorder(), testing::ElementsAre(12213, 215, 123712, 127541248));
+    EXPECT_THAT(*b.inorder(), testing::ElementsAre(215, 12213, 123712, 127541248));
+    EXPECT_THAT(*b.postorder(), testing::ElementsAre( 215,127541248, 123712, 12213));
+}
+
+TEST(AVLTreeTest, Insert_bal_null_eins_FALL_2_3_1) {
+    AVLTree b;
+    b.insert(215);
+    b.insert(12213);
+    b.insert(123712);
+    EXPECT_EQ(b.getBalance(12213), 0);
+    EXPECT_EQ(b.getBalance(215), 0);
+    EXPECT_EQ(b.getBalance(123712), 0);
+    EXPECT_THAT(*b.preorder(), testing::ElementsAre(12213, 215, 123712));
+    EXPECT_THAT(*b.inorder(), testing::ElementsAre(215, 12213, 123712));
+    EXPECT_THAT(*b.postorder(), testing::ElementsAre(215, 123712, 12213));
+}
+
+TEST(AVLTreeTest, Insert_bal_null_eins_FALL_2_3_2) {
+    AVLTree b;
+    b.insert(215);
+    b.insert(123712);
+    b.insert(12213);
     EXPECT_EQ(b.getBalance(12213), 0);
     EXPECT_EQ(b.getBalance(215), 0);
     EXPECT_EQ(b.getBalance(123712), 0);
@@ -145,7 +272,7 @@ TEST(AVLTreeTest, Seven_Nodes_Random_Input) {
 }
 
 // insert, remove and search
-
+/*
 TEST(AVLTreeTest, One_Node_Insert_Remove) {
     AVLTree b;
     b.insert(12213);
@@ -277,3 +404,4 @@ TEST(AVLTreeTest, DeconstructWholeTree) {
     EXPECT_THAT(*b.inorder(), testing::ElementsAre(3,4,7)); //l,w,r
     EXPECT_THAT(*b.postorder(), testing::ElementsAre(3,7,4)); //l,r,w
 }
+ */
