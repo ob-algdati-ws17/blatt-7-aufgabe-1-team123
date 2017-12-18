@@ -69,19 +69,27 @@ private:
          * @param t the tree, where the node is placed in.
          */
         Node(const int k, Node *p, Node *l, Node *r, AVLTree *t);
+
         /**
          * Delets the node;
          */
         ~Node();
 
+
         void upin(bool growedLeft);
+
         /**
          * Returns if the current node is the root of the tree or not.
          * @return true, if the node is the root of the tree.
          */
         bool isRoot();
 
+        /**
+         * Returns true if this node is the left follower of its previous element, else false.
+         * @return true if this node is the left follower of its previous element, else false.
+         */
         bool isLeftFollower();
+
         /**
          * Returns the hight of a tree, defined by the maximum number of connections between the root and a leaf.
          * @return hight of the tree.
@@ -121,6 +129,7 @@ public:
     /**
      * Adds a node with this value to the tree.
      * If the value already exists, nothing happens.
+     * Ensures that it is still an AVL-Tree
      */
     void insert(const int);
     /**
