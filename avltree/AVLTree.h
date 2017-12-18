@@ -69,6 +69,7 @@ private:
          * @param t the tree, where the node is placed in.
          */
         Node(const int k, Node *p, Node *l, Node *r, AVLTree *t);
+
         /**
          * Delets the node;
          */
@@ -77,15 +78,15 @@ private:
 
         void upin(bool growedLeft);
 
-/**
+        /**
          * Returns if the current node is the root of the tree or not.
          * @return true, if the node is the root of the tree.
          */
         bool isRoot();
 
         /**
-         *
-         * @return
+         * Returns true if this node is the left follower of its previous element, else false.
+         * @return true if this node is the left follower of its previous element, else false.
          */
         bool isLeftFollower();
 

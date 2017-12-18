@@ -4,9 +4,8 @@ compliler: clang
 
 
 script:
-  - mkdir build
-  - cd build && cmake ..
-  - cd build && make
+  - cmake
+  - make
 
 
 
