@@ -74,14 +74,21 @@ private:
          */
         ~Node();
 
+
         void upin(bool growedLeft);
-        /**
+
+/**
          * Returns if the current node is the root of the tree or not.
          * @return true, if the node is the root of the tree.
          */
         bool isRoot();
 
+        /**
+         *
+         * @return
+         */
         bool isLeftFollower();
+
         /**
          * Returns the hight of a tree, defined by the maximum number of connections between the root and a leaf.
          * @return hight of the tree.
@@ -121,6 +128,7 @@ public:
     /**
      * Adds a node with this value to the tree.
      * If the value already exists, nothing happens.
+     * Ensures that it is still an AVL-Tree
      */
     void insert(const int);
     /**
