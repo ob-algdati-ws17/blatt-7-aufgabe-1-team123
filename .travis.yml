@@ -1,13 +1,14 @@
+# Enable C++
 language: cpp
 
-compliler: clang
+# Compiler
+compiler: gcc
 
-
+# Build steps
 script:
+  - rm -rf build
   - mkdir build
   - cd build
-  - cmake ..
-  - make
-
-
-
+  - pwd && cmake ..
+  - pwd && make
+  - pwd && make test
