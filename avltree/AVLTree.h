@@ -88,6 +88,8 @@ private:
          * @param growedLeft true if the left subtree of the noed growed, false if the right subtree of the node growed
          */
         void upin(bool growedLeft);
+
+        void upout(bool leftShrinked);
         
         void leftRotation();
         

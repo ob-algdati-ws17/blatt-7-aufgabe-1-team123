@@ -377,6 +377,8 @@ void AVLTree::Node::rightRotation() {
  *******************************************************************/
 
 void AVLTree::remove(const int value) {
+    if(!search(value)) return;
+
     Node *previous = nullptr;
     Node *current = root;
     while (current != nullptr && current->key != value) {
@@ -389,9 +391,6 @@ void AVLTree::remove(const int value) {
         }
     }
 
-    if (current == nullptr)
-        return;
-
     // Ist Blatt
     if (current->left == nullptr && current->right == nullptr) {
         if (previous == nullptr) {
@@ -399,8 +398,22 @@ void AVLTree::remove(const int value) {
         }
         else if (previous->left == current) {
             previous->left = nullptr;
+            previous->balance = previous->balance + 1;
+            if(abs(previous->height()) == 1) return;
+            else if(abs(previous->height()) == 0) previous->upout(true);
+            else if(abs(previous->height()) == 2) {
+                // Rotation oder Doppelrotation
+                if(previous->balance == 0) previous->upout(true);
+            }
         } else {
             previous->right = nullptr;
+            previous->balance = previous->balance - 1;
+            if(abs(previous->height()) == 1) return;
+            else if(abs(previous->height()) == 0) previous->upout(false);
+            else if(abs(previous->height()) == 2) {
+                // Rotation oder Doppelrotation
+                if(previous->balance == 0) previous->upout(false);
+            }
         }
     }
     // Hat nur linken Nachfolger
@@ -410,8 +423,10 @@ void AVLTree::remove(const int value) {
         }
         else if (previous->left == current) {
             previous->left = current->left;
+            previous->upout(true);
         } else {
             previous->right = current->left;
+            previous->upout(false);
         }
     }
     // Hat nur rechten Nachfolger
@@ -421,12 +436,16 @@ void AVLTree::remove(const int value) {
         }
         else if (previous->left == current) {
             previous->left = current->right;
+            previous->upout(true);
         } else {
             previous->right = current->right;
+            previous->upout(false);
         }
     }
     // Hat auf beiden Seiten Nachfolger
     else {
+        int initialHight = current->height();
+
         // Symetrischen Nachfolger suchen
         Node* symFollower = current->right;
         while (symFollower->left != nullptr) {
@@ -436,17 +455,23 @@ void AVLTree::remove(const int value) {
         remove(keySymFollower);
 
         if (previous == nullptr) {
-            //root = new Node(keySymFollower, current->left, current->right);
+            root = new Node(keySymFollower, nullptr, current->left, current->right, this);
         }
         else if (previous->left == current) {
-            //previous->left = new Node(keySymFollower, current->left, current->right);
+            previous->left = new Node(keySymFollower, nullptr, current->left, current->right, this);
+            if(initialHight > previous->left->height() && previous->balance ==0) previous->upout(true);
         } else {
-            //previous->right = new Node(keySymFollower, current->left, current->right);
+            previous->right = new Node(keySymFollower, nullptr, current->left, current->right, this);
+            if(initialHight > previous->right->height() && previous->balance ==0) previous->upout(false);
         }
     }
     current->left = nullptr;
     current->right = nullptr;
     delete(current);
+}
+
+void AVLTree::Node::upout(bool leftShrinked) {
+    return;
 }
 
 /********************************************************************
