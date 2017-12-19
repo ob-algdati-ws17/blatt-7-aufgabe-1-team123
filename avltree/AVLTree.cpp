@@ -145,40 +145,7 @@ void AVLTree::Node::upin(bool leftGrowed) {
         // This node/subtree is the left follower of the previous node +
         // this subtree was one heigher than the right subtree
         // -> this subtree would now be two heigher -> Right Rotation
-
-        // Node corespond to the script
-        Node *prePrevious = previous->previous;
-        Node *y = previous;
-        // x is this node
-        Node *t1 = left;
-        Node *t2 = right;
-        Node *t3 = y->right;
-
-        // Connection to the subtree looked at
-        if (prePrevious == nullptr) {
-            // -> previous/y is root
-            tree->root = this;
-        }
-        else {
-            if (y->isLeftFollower())
-                prePrevious->left = this;
-            else
-                prePrevious->right = this;
-        }
-        this->previous = prePrevious;
-
-        // Make y to right follower of x
-        this->right = y;
-        y->previous = this;
-
-        // Make t2 to left follower of y
-        y->left = t2;
-        if (t2 != nullptr)
-            t2->previous = y;
-
-        // Update balance
-        y->balance = 0;
-        this->balance = 0;
+        leftRotation();
     }
     else if (!isLeftFollower() && previous->balance == +1 && balance == +1 && !leftGrowed) {
         // Both subrees of this node had equal hight + right subtree growed
@@ -186,40 +153,7 @@ void AVLTree::Node::upin(bool leftGrowed) {
         // This node/subtree is the right follower of the previous node +
         // this subtree was one heigher than the left subtree
         // -> this subtree would now be two heigher -> Left Rotation
-
-        // Node corespond to the script
-        Node *prePrevious = previous->previous;
-        Node *y = previous;
-        // x is this node
-        Node *t1 = right;
-        Node *t2 = left;
-        Node *t3 = y->left;
-
-        // Connection to the subtree looked at
-        if (prePrevious == nullptr) {
-            // -> previous/y is root
-            tree->root = this;
-        }
-        else {
-            if (y->isLeftFollower())
-                prePrevious->left = this;
-            else
-                prePrevious->right = this;
-        }
-        this->previous = prePrevious;
-
-        // Make y to left follower of x
-        this->left = y;
-        y->previous = this;
-
-        // Make t2 to right follower of y
-        y->right = t2;
-        if (t2 != nullptr)
-            t2->previous = y;
-
-        // Update balance
-        y->balance = 0;
-        this->balance = 0;
+        rightRotation();
     }
     else if (isLeftFollower() && previous->balance == -1 && balance == +1 && !leftGrowed) {
         // Both subrees of this node had equal hight + right subtree growed
@@ -227,66 +161,7 @@ void AVLTree::Node::upin(bool leftGrowed) {
         // This node/subtree is the left follower of the previous node +
         // this subtree was one heigher than the right subtree
         // -> this subtree would now be two heigher -> Left-Right Rotation
-
-        // Node corespond to the script
-        Node *prePrevious = previous->previous;
-        Node *z = previous;
-        // x is this node
-        Node *y = right;
-        Node *t1 = left;
-        Node *t2 = y->left;
-        Node *t3 = y->right;
-        Node *t4 = z->right;
-
-        // Connection to the subtree looked at
-        if (prePrevious == nullptr) {
-            // -> previous/y is root
-            tree->root = y;
-        }
-        else {
-            if (z->isLeftFollower())
-                prePrevious->left = y;
-            else
-                prePrevious->right = y;
-        }
-        y->previous = prePrevious;
-
-        // Make z to right follower of y
-        y->right = z;
-        z->previous = y;
-
-        // Make t3 to left follower of z
-        z->left = t3;
-        if (t3 != nullptr)
-            t3->previous = z;
-
-        // Make x/this to left follower of y
-        y->left = this;
-        this->previous = y;
-
-        // Make t2 to right follower of x/this
-        this->right = t2;
-        if (t1 != nullptr)
-            t2->previous = this;
-
-        // Update balance factor
-        y->balance = 0;
-
-        int heightleft = 0;
-        if (this->left != nullptr)
-            heightleft = this->left->height() + 1;
-        int heightright = 0;
-        if (this->right != nullptr)
-            heightright = this->right->height() + 1;
-        this->balance = heightright - heightleft;
-
-        heightleft = 0;
-        if (z->left != nullptr)
-            heightleft = z->left->height() + 1;
-        heightright = 0;
-        if (z->right != nullptr)
-            heightright = z->right->height() + 1;
-        z->balance = heightright - heightleft;
+        rightLeftRotation();
     }
     else if (!isLeftFollower() && previous->balance == +1 && balance == -1 && leftGrowed) {
         // Both subrees of this node had equal hight + left subtree growed
@@ -294,70 +169,208 @@ void AVLTree::Node::upin(bool leftGrowed) {
         // This node/subtree is the right follower of the previous node +
         // this subtree was one heigher than the left subtree
         // -> this subtree would now be two heigher -> Right-Left Rotation
-
-        // Node corespond to the script
-        Node *prePrevious = previous->previous;
-        Node *z = previous;
-        // x is this node
-        Node *y = left;
-        Node *t1 = right;
-        Node *t2 = y->right;
-        Node *t3 = y->left;
-        Node *t4 = z->left;
-
-        // Connection to the subtree looked at
-        if (prePrevious == nullptr) {
-            // -> previous/y is root
-            tree->root = y;
-        }
-        else {
-            if (z->isLeftFollower())
-                prePrevious->left = y;
-            else
-                prePrevious->right = y;
-        }
-        y->previous = prePrevious;
-
-        // Make z to left follower of y
-        y->left = z;
-        z->previous = y;
-
-        // Make t3 to right follower of z
-        z->right = t3;
-        if (t3 != nullptr)
-            t3->previous = z;
-
-        // Make x/this to right follower of y
-        y->right = this;
-        this->previous = y;
-
-        // Make t2 to left follower of x/this
-        this->left = t2;
-        if (t2 != nullptr)
-            t2->previous = this;
-
-        // Update balance factor
-        y->balance = 0;
-
-        int heightleft = 0;
-        if (this->left != nullptr)
-            heightleft = this->left->height() + 1;
-        int heightright = 0;
-        if (this->right != nullptr)
-            heightright = this->right->height() + 1;
-        this->balance = heightright - heightleft;
-
-        heightleft = 0;
-        if (z->left != nullptr)
-            heightleft = z->left->height() + 1;
-        heightright = 0;
-        if (z->right != nullptr)
-            heightright = z->right->height() + 1;
-        z->balance = heightright - heightleft;
+        leftRightRotation();
     }
     else
         throw "Invalid upin call";
 }
+
+void AVLTree::Node::leftRotation() {
+    // Node corespond to the script
+    Node *prePrevious = previous->previous;
+    Node *y = previous;
+    // x is this node
+    Node *t1 = left;
+    Node *t2 = right;
+    Node *t3 = y->right;
+
+    // Connection to the subtree looked at
+    if (prePrevious == nullptr) {
+        // -> previous/y is root
+        tree->root = this;
+    }
+    else {
+        if (y->isLeftFollower())
+            prePrevious->left = this;
+        else
+            prePrevious->right = this;
+    }
+    this->previous = prePrevious;
+
+    // Make y to right follower of x
+    this->right = y;
+    y->previous = this;
+
+    // Make t2 to left follower of y
+    y->left = t2;
+    if (t2 != nullptr)
+        t2->previous = y;
+
+    // Update balance
+    y->balance = 0;
+    this->balance = 0;
+}
+
+void AVLTree::Node::rightLeftRotation() {
+    // Node corespond to the script
+    Node *prePrevious = previous->previous;
+    Node *z = previous;
+    // x is this node
+    Node *y = right;
+    Node *t1 = left;
+    Node *t2 = y->left;
+    Node *t3 = y->right;
+    Node *t4 = z->right;
+
+    // Connection to the subtree looked at
+    if (prePrevious == nullptr) {
+        // -> previous/y is root
+        tree->root = y;
+    }
+    else {
+        if (z->isLeftFollower())
+            prePrevious->left = y;
+        else
+            prePrevious->right = y;
+    }
+    y->previous = prePrevious;
+
+    // Make z to right follower of y
+    y->right = z;
+    z->previous = y;
+
+    // Make t3 to left follower of z
+    z->left = t3;
+    if (t3 != nullptr)
+        t3->previous = z;
+
+    // Make x/this to left follower of y
+    y->left = this;
+    this->previous = y;
+
+    // Make t2 to right follower of x/this
+    this->right = t2;
+    if (t1 != nullptr)
+        t2->previous = this;
+
+    // Update balance factor
+    y->balance = 0;
+
+    int heightleft = 0;
+    if (this->left != nullptr)
+        heightleft = this->left->height() + 1;
+    int heightright = 0;
+    if (this->right != nullptr)
+        heightright = this->right->height() + 1;
+    this->balance = heightright - heightleft;
+
+    heightleft = 0;
+    if (z->left != nullptr)
+        heightleft = z->left->height() + 1;
+    heightright = 0;
+    if (z->right != nullptr)
+        heightright = z->right->height() + 1;
+    z->balance = heightright - heightleft;
+}
+
+void AVLTree::Node::leftRightRotation() {
+    // Node corespond to the script
+    Node *prePrevious = previous->previous;
+    Node *z = previous;
+    // x is this node
+    Node *y = left;
+    Node *t1 = right;
+    Node *t2 = y->right;
+    Node *t3 = y->left;
+    Node *t4 = z->left;
+
+    // Connection to the subtree looked at
+    if (prePrevious == nullptr) {
+        // -> previous/y is root
+        tree->root = y;
+    }
+    else {
+        if (z->isLeftFollower())
+            prePrevious->left = y;
+        else
+            prePrevious->right = y;
+    }
+    y->previous = prePrevious;
+
+    // Make z to left follower of y
+    y->left = z;
+    z->previous = y;
+
+    // Make t3 to right follower of z
+    z->right = t3;
+    if (t3 != nullptr)
+        t3->previous = z;
+
+    // Make x/this to right follower of y
+    y->right = this;
+    this->previous = y;
+
+    // Make t2 to left follower of x/this
+    this->left = t2;
+    if (t2 != nullptr)
+        t2->previous = this;
+
+    // Update balance factor
+    y->balance = 0;
+
+    int heightleft = 0;
+    if (this->left != nullptr)
+        heightleft = this->left->height() + 1;
+    int heightright = 0;
+    if (this->right != nullptr)
+        heightright = this->right->height() + 1;
+    this->balance = heightright - heightleft;
+
+    heightleft = 0;
+    if (z->left != nullptr)
+        heightleft = z->left->height() + 1;
+    heightright = 0;
+    if (z->right != nullptr)
+        heightright = z->right->height() + 1;
+    z->balance = heightright - heightleft;
+}
+
+void AVLTree::Node::rightRotation() {
+    // Node corespond to the script
+    Node *prePrevious = previous->previous;
+    Node *y = previous;
+    // x is this node
+    Node *t1 = right;
+    Node *t2 = left;
+    Node *t3 = y->left;
+
+    // Connection to the subtree looked at
+    if (prePrevious == nullptr) {
+        // -> previous/y is root
+        tree->root = this;
+    }
+    else {
+        if (y->isLeftFollower())
+            prePrevious->left = this;
+        else
+            prePrevious->right = this;
+    }
+    this->previous = prePrevious;
+
+    // Make y to left follower of x
+    this->left = y;
+    y->previous = this;
+
+    // Make t2 to right follower of y
+    y->right = t2;
+    if (t2 != nullptr)
+        t2->previous = y;
+
+    // Update balance
+    y->balance = 0;
+    this->balance = 0;
+}
+
 
 /********************************************************************
  * Remove

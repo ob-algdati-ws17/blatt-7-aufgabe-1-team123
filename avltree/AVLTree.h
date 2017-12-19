@@ -88,6 +88,14 @@ private:
          * @param growedLeft true if the left subtree of the noed growed, false if the right subtree of the node growed
          */
         void upin(bool growedLeft);
+        
+        void leftRotation();
+        
+        void rightLeftRotation();
+        
+        void leftRightRotation();
+        
+        void rightRotation();
 
         /**
          * Returns if the current node is the root of the tree or not.
