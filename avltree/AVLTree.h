@@ -82,7 +82,7 @@ private:
          */
         ~Node();
 
-        /*
+        /**
          * Ensures that the tree is still an AVL-Tree.
          * If the tree is not an AVL-Tree the necessary rotation will be executed.
          * @param growedLeft true if the left subtree of the noed growed, false if the right subtree of the node growed
@@ -90,13 +90,31 @@ private:
         void upin(bool growedLeft);
 
         void upout(bool leftShrinked);
-        
+
+        /**
+         * Rotates the (sub)tree to the left so that this node will get the root of the (sub)tree.
+         * The rotation includes just nodes in the subtree of which the previous of this node is the root.
+         */
         void leftRotation();
-        
+
+        /**
+         * Rotates the (sub)tree first to the right and then to the left, so that the right follower of this node gets
+         * the root of the (sub)tree. The rotation includes just nodes in the subtree of which the previous of this node
+         * is the root.
+         */
         void rightLeftRotation();
-        
+
+        /**
+         * Rotates the (sub)tree first to the left and then to the right, so that the left follower of this node gets
+         * the root of the (sub)tree. The rotation includes just nodes in the subtree of which the previous of this node
+         * is the root.
+         */
         void leftRightRotation();
-        
+
+        /**
+         * Rotates the (sub)tree to the right so that this node will get the root of the (sub)tree.
+         * The rotation includes just nodes in the subtree of which the previous of this node is the root.
+         */
         void rightRotation();
 
         /**
