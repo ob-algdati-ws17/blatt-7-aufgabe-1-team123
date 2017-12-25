@@ -135,6 +135,9 @@ private:
          */
         int height();
 
+
+        void adjustBalance(bool);
+
         /**
          * The preorder goes from the root to the left branch of the tree (in preorder) to the right branch of the tree (in preorder).
          * @return a preordered vector.
@@ -217,6 +220,7 @@ public:
      * @return pointer on the seached node, if the value exists or a nullpointer else.
      */
     Node* find(const int);
+
 };
 
 #endif //TREES_AVLTREE_H
