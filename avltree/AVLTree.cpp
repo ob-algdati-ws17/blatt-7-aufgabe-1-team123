@@ -395,7 +395,7 @@ void AVLTree::remove(const int value) {
             previous->left = nullptr;
             previous->balance += 1;
 
-            if (abs(previous->height()) == 1)previous->adjustBalance(true);
+            if (abs(previous->height()) == 1);
             else if (previous->height() == 0 && previous->height() < hightBefore) previous->upout(true);
             else if (previous->height() == 2) {
                 if (previous->right->right != nullptr) previous->right->leftRotation();
@@ -410,7 +410,7 @@ void AVLTree::remove(const int value) {
             previous->right = nullptr;
             previous->balance -= 1;
 
-            if (abs(previous->height()) == 1) previous->adjustBalance(false);
+            if (abs(previous->height()) == 1);
             else if (previous->height() == 0 && previous->height() < hightBefore)previous->upout(false);
             else if (previous->height() == 2) {
                 if (previous->right->right != nullptr) previous->right->leftRotation();
@@ -426,12 +426,15 @@ void AVLTree::remove(const int value) {
     } else if (current->left != nullptr && current->right == nullptr) {
         if (previous == nullptr) {
             root = current->left;
+            root->previous = nullptr;
         } else if (previous->left == current) {
             previous->left = current->left;
+            previous->left->previous = previous;
             previous->balance += 1;
             previous->upout(true);
         } else {
             previous->right = current->left;
+            previous->right->previous = previous;
             previous->balance -=1;
             previous->upout(false);
         }
@@ -439,12 +442,15 @@ void AVLTree::remove(const int value) {
     } else if (current->left == nullptr && current->right != nullptr) {
         if (previous == nullptr) {
             root = current->right;
+            root->previous = nullptr;
         } else if (previous->left == current) {
             previous->left = current->right;
-           previous->balance +=1;
+            previous->left->previous = previous;
+            previous->balance +=1;
             previous->upout(true);
         } else {
             previous->right = current->right;
+            previous->right->previous = previous;
             previous->balance -= 1;
             previous->upout(false);
         }
@@ -461,17 +467,26 @@ void AVLTree::remove(const int value) {
 
         if (previous == nullptr) {
             root = new Node(keySymFollower, nullptr, current->left, current->right, this);
+            root->balance = current->balance;
+            root->left->previous = root;
+            root->right->previous = root;
         } else if (previous->left == current) {
             previous->left = new Node(keySymFollower, previous, current->left, current->right, this);
+            previous->left->balance = current->balance;
+             previous->left->left->previous = previous;
+            previous->left->right->previous = previous;
             if(previous->balance == 0 && previous->height() < hightBefore) previous->upout(true);
         } else /*previous->right == current */ {
             previous->right = new Node(keySymFollower, previous, current->left, current->right, this);
+            previous->right->balance = current->balance;
+            previous->right->left->previous = previous;
+            previous->right->right->previous = previous;
             if(previous->balance == 0 && previous->height() < hightBefore) previous->upout(false);
         }
     }
     current->left = nullptr;
     current->right = nullptr;
-    delete(current);
+    //delete(current);
     return;
 }
 
@@ -482,9 +497,7 @@ void AVLTree::Node::upout(bool leftShrinked) {
         return;
     }
     // ********** 1.1 both subtrees of previous get equal height *************
-    if ((isLeftFollower() && previous->balance == -1)
-        // ********** 1.1
-        || (!isLeftFollower() && previous->balance == +1)) {
+    if ((isLeftFollower() && previous->balance == -1) || (!isLeftFollower() && previous->balance == +1)) {
         previous->balance = 0;
         previous->upout(isLeftFollower());
 
@@ -497,30 +510,35 @@ void AVLTree::Node::upout(bool leftShrinked) {
 
         // ******* 1.3 subtrees of previous which was already smaller, shrinkes *******
     } else if (isLeftFollower() && previous->balance == +1) {
+        cout << balance << endl;
         // ******* 1.3.1
-        if (balance == 0) {
+        if (previous->right->balance == 0) {
             previous->right->rightRotation(); // Jappa
             // ******* 1.3.2
-        } else if (balance == 1) {
-            rightRotation();
-            previous->previous->upout(false);
+        } else if (previous->right->balance == 1) {
+            previous->right->rightRotation();
+            if (previous->previous != nullptr) previous->previous->upout(false);
+            else return;
             // ******* 1.3.3
-        } else /*balance == -1 */ {
+        } else /*previous->right->balance == -1 */ {
             previous->right->leftRightRotation();
-            previous->previous->upout(false);
+            if (previous->previous != nullptr) previous->previous->upout(false);
+            else return;
         }
     } else if (!isLeftFollower() && previous->balance == -1) {
         // ******* 1.3.1
-        if (balance == 0) {
+        if (previous->left->balance == 0) {
             previous->left->leftRotation();
             // ******* 1.3.2
-        } else if (balance == 1) {
-            leftRotation();
-            previous->previous->upout(true);
+        } else if (previous->left->balance == 1) {
+            previous->left->leftRotation();
+            if(previous->previous != nullptr) previous->previous->upout(true);
+            else return;
             // ******* 1.3.3
-        } else /*balance == -1 */ {
+        } else /*previous->left->balance == -1 */ {
             previous->left->rightLeftRotation();
-            previous->previous->upout(true);
+            if(previous->previous != nullptr) previous->previous->upout(true);
+            else return;
         }
     } else
         throw "Invalid upout call";
