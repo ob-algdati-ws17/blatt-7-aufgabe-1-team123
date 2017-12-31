@@ -399,11 +399,11 @@ void AVLTree::remove(const int value) {
             else if (previous->height() == 0 && previous->height() < hightBefore) previous->upout(true);
             else if (previous->height() == 2) {
                 if (previous->right->right != nullptr) previous->right->leftRotation();
-                else /* previous->right->left != nullptr)*/ previous->right->leftRightRotation();
+                else /* previous->right->left != nullptr)*/ previous->left->leftRightRotation();
                 if (previous->balance == 0) previous->upout(true);
             } else /* previous->height() == -2 */ {
                 if (previous->left->left != nullptr) previous->left->rightRotation();
-                else /* (previous->left->right != nullptr) */ previous->left->rightLeftRotation();
+                else /* (previous->left->right != nullptr) */ previous->right->rightLeftRotation();
                 if (previous->balance == 0) previous->upout(true);
             }
         } else /* previous->right == current */{
@@ -414,11 +414,11 @@ void AVLTree::remove(const int value) {
             else if (previous->height() == 0 && previous->height() < hightBefore)previous->upout(false);
             else if (previous->height() == 2) {
                 if (previous->right->right != nullptr) previous->right->leftRotation();
-                else /* previous->right->left != nullptr */ previous->right->leftRightRotation();
+                else /* previous->right->left != nullptr */ previous->left->leftRightRotation();
                 if (previous->balance == 0) previous->upout(false);
             } else if (previous->height() == -2) {
                 if (previous->left->left != nullptr) previous->left->rightRotation();
-                else /* previous->left->right != nullptr */ previous->left->rightLeftRotation();
+                else /* previous->left->right != nullptr */ previous->right->rightLeftRotation();
                 if (previous->balance == 0) previous->upout(false);
             }
         }
@@ -465,28 +465,30 @@ void AVLTree::remove(const int value) {
         int keySymFollower = symFollower->key;
         remove(keySymFollower);
 
+        auto newNode = new Node(keySymFollower, previous, current->left, current->right, this);
+
         if (previous == nullptr) {
-            root = new Node(keySymFollower, nullptr, current->left, current->right, this);
+            root = newNode;
             root->balance = current->balance;
             root->left->previous = root;
             root->right->previous = root;
         } else if (previous->left == current) {
-            previous->left = new Node(keySymFollower, previous, current->left, current->right, this);
+            previous->left = newNode;
             previous->left->balance = current->balance;
-             previous->left->left->previous = previous;
-            previous->left->right->previous = previous;
+            if(previous->left->left != nullptr) previous->left->left->previous = newNode;
+            if(previous->left->right != nullptr) previous->left->right->previous = newNode;
             if(previous->balance == 0 && previous->height() < hightBefore) previous->upout(true);
         } else /*previous->right == current */ {
             previous->right = new Node(keySymFollower, previous, current->left, current->right, this);
             previous->right->balance = current->balance;
-            previous->right->left->previous = previous;
-            previous->right->right->previous = previous;
+            if(previous->right->left != nullptr) previous->right->left->previous = newNode;
+            if(previous->right->right != nullptr) previous->right->right->previous = newNode;
             if(previous->balance == 0 && previous->height() < hightBefore) previous->upout(false);
         }
     }
     current->left = nullptr;
     current->right = nullptr;
-    //delete(current);
+    delete(current);
     return;
 }
 
