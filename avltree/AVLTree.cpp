@@ -424,10 +424,12 @@ void AVLTree::remove(const int value) {
         } else if (previous->left == current) {
             previous->left = current->left;
             previous->left->previous = previous;
+            previous->balance += 1;
             previous->upout(true);
         } else {
             previous->right = current->left;
             previous->right->previous = previous;
+            previous->balance -= 1;
             previous->upout(false);
         }
         // Hat nur rechten Nachfolger
@@ -438,11 +440,13 @@ void AVLTree::remove(const int value) {
         } else if (previous->left == current) {
             previous->left = current->right;
             previous->left->previous = previous;
+            previous->balance += 1;
             previous->upout(true);
         } else {
             previous->right = current->right;
             previous->right->previous = previous;
-            previous->right->upout(false); //!!!
+            previous->balance -= 1;
+            previous->right->upout(false);
         }
 
         // Hat auf beiden Seiten Nachfolger
@@ -483,12 +487,14 @@ void AVLTree::remove(const int value) {
 }
 
 void AVLTree::Node::upout(bool leftShrinked) {
+    if(balance != 0 || (isRoot() && balance == 0) ) return;
+/*
     if(previous == nullptr) {
         if(leftShrinked) balance += 1;
         else balance -= 1;
 
         if(balance == -1 || balance == 0 || balance == 1) return;
-    }
+    }*/
     // ********** 1.1 both subtrees of previous get equal height *************
     if ((isLeftFollower() && previous->balance == -1) || (!isLeftFollower() && previous->balance == +1)) {
         previous->balance = 0;

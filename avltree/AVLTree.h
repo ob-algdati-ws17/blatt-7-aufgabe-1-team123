@@ -135,9 +135,6 @@ private:
          */
         int height();
 
-
-        void adjustBalance(bool);
-
         /**
          * The preorder goes from the root to the left branch of the tree (in preorder) to the right branch of the tree (in preorder).
          * @return a preordered vector.
