@@ -464,8 +464,8 @@ void AVLTree::remove(const int value) {
         if (previous == nullptr) {
             root = newNode;
             root->balance = current->balance;
-            root->left->previous = root;
-            root->right->previous = root;
+            if(root->left != nullptr) root->left->previous = root;
+            if(root->right != nullptr) root->right->previous = root;
         } else if (previous->left == current) {
             previous->left = newNode;
             previous->left->balance = current->balance;
