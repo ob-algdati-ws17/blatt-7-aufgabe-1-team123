@@ -396,30 +396,24 @@ void AVLTree::remove(const int value) {
             previous->balance += 1;
 
             if (abs(previous->height()) == 1);
-            else if (previous->height() == 0 && previous->height() < hightBefore) previous->upout(true);
-            else if (previous->height() == 2) {
-                if (previous->right->right != nullptr) previous->right->leftRotation();
-                else /* previous->right->left != nullptr)*/ previous->left->leftRightRotation();
-                if (previous->balance == 0) previous->upout(true);
-            } else /* previous->height() == -2 */ {
-                if (previous->left->left != nullptr) previous->left->rightRotation();
-                else /* (previous->left->right != nullptr) */ previous->right->rightLeftRotation();
-                if (previous->balance == 0) previous->upout(true);
+            else if (previous->height() == 0) previous->upout(true);
+            else /* (previous->height() == 2) */{
+                if (previous->right->right != nullptr) previous->right->rightRotation();
+                else /* previous->right->left != nullptr)*/ previous->right->leftRightRotation();
+
+                if (previous->previous->balance == 0) previous->previous->upout(previous->isLeftFollower());
             }
         } else /* previous->right == current */{
             previous->right = nullptr;
             previous->balance -= 1;
 
             if (abs(previous->height()) == 1);
-            else if (previous->height() == 0 && previous->height() < hightBefore)previous->upout(false);
-            else if (previous->height() == 2) {
-                if (previous->right->right != nullptr) previous->right->leftRotation();
-                else /* previous->right->left != nullptr */ previous->left->leftRightRotation();
-                if (previous->balance == 0) previous->upout(false);
-            } else if (previous->height() == -2) {
-                if (previous->left->left != nullptr) previous->left->rightRotation();
-                else /* previous->left->right != nullptr */ previous->right->rightLeftRotation();
-                if (previous->balance == 0) previous->upout(false);
+            else if (previous->height() == 0)previous->upout(false);
+            else /* (previous->height() == 2) */{
+                if (previous->left->left != nullptr) previous->left->leftRotation(); //!
+                else /* previous->left->right != nullptr */ previous->left->rightLeftRotation();
+
+                if (previous->previous->balance == 0) previous->previous->upout(previous->isLeftFollower());
             }
         }
         // Hat nur linken Nachfolger
@@ -430,12 +424,10 @@ void AVLTree::remove(const int value) {
         } else if (previous->left == current) {
             previous->left = current->left;
             previous->left->previous = previous;
-            previous->balance += 1;
             previous->upout(true);
         } else {
             previous->right = current->left;
             previous->right->previous = previous;
-            previous->balance -=1;
             previous->upout(false);
         }
         // Hat nur rechten Nachfolger
@@ -446,13 +438,11 @@ void AVLTree::remove(const int value) {
         } else if (previous->left == current) {
             previous->left = current->right;
             previous->left->previous = previous;
-            previous->balance +=1;
             previous->upout(true);
         } else {
             previous->right = current->right;
             previous->right->previous = previous;
-            previous->balance -= 1;
-            previous->upout(false);
+            previous->right->upout(false); //!!!
         }
 
         // Hat auf beiden Seiten Nachfolger
@@ -494,9 +484,10 @@ void AVLTree::remove(const int value) {
 
 void AVLTree::Node::upout(bool leftShrinked) {
     if(previous == nullptr) {
-        //if(leftShrinked) this->balance += 1;
-        //else this->balance -= 1;
-        return;
+        if(leftShrinked) balance += 1;
+        else balance -= 1;
+
+        if(balance == -1 || balance == 0 || balance == 1) return;
     }
     // ********** 1.1 both subtrees of previous get equal height *************
     if ((isLeftFollower() && previous->balance == -1) || (!isLeftFollower() && previous->balance == +1)) {
@@ -512,34 +503,33 @@ void AVLTree::Node::upout(bool leftShrinked) {
 
         // ******* 1.3 subtrees of previous which was already smaller, shrinkes *******
     } else if (isLeftFollower() && previous->balance == +1) {
-        cout << balance << endl;
         // ******* 1.3.1
         if (previous->right->balance == 0) {
-            previous->right->rightRotation(); // Jappa
+            previous->right->rightRotation();
             // ******* 1.3.2
         } else if (previous->right->balance == 1) {
             previous->right->rightRotation();
-            if (previous->previous != nullptr) previous->previous->upout(false);
+            if (previous->previous != nullptr) previous->previous->upout(previous->isLeftFollower());
             else return;
             // ******* 1.3.3
         } else /*previous->right->balance == -1 */ {
             previous->right->leftRightRotation();
-            if (previous->previous != nullptr) previous->previous->upout(false);
+            if (previous->previous != nullptr) previous->previous->upout(previous->isLeftFollower());
             else return;
         }
     } else if (!isLeftFollower() && previous->balance == -1) {
-        // ******* 1.3.1
+        // ******* 2.3.1
         if (previous->left->balance == 0) {
             previous->left->leftRotation();
-            // ******* 1.3.2
+            // ******* 2.3.2
         } else if (previous->left->balance == 1) {
-            previous->left->leftRotation();
-            if(previous->previous != nullptr) previous->previous->upout(true);
-            else return;
-            // ******* 1.3.3
-        } else /*previous->left->balance == -1 */ {
             previous->left->rightLeftRotation();
-            if(previous->previous != nullptr) previous->previous->upout(true);
+            if(previous->previous != nullptr) previous->previous->upout(previous->isLeftFollower());
+            else return;
+            // ******* 2.3.3
+        } else /*previous->left->balance == -1 */ {
+            previous->left->leftRotation();
+            if(previous->previous != nullptr) previous->previous->upout(previous->isLeftFollower());
             else return;
         }
     } else
@@ -671,20 +661,4 @@ int AVLTree::Node::height() {
         return left->height() + 1;
     else
         return max(left->height(), right->height()) + 1;
-}
-
-void AVLTree::Node::adjustBalance(bool leftShrinked){
-    auto goUp = previous;
-    while(goUp != nullptr) {
-        if(leftShrinked) goUp->balance = goUp->balance + 1;
-        else goUp->balance = goUp->balance - 1;
-
-        if(goUp->previous != nullptr) {
-            if (goUp->isLeftFollower()) leftShrinked = true;
-            else leftShrinked = false;
-        } else return;
-
-        goUp = goUp->previous;
-    }
-    return;
 }
