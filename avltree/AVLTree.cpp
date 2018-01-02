@@ -250,7 +250,7 @@ void AVLTree::Node::rightLeftRotation() {
 
     // Make t2 to right follower of x/this
     this->right = t2;
-    if (t1 != nullptr)
+    if (t2 != nullptr)
         t2->previous = this;
 
     // Update balance factor
@@ -446,7 +446,7 @@ void AVLTree::remove(const int value) {
             previous->right = current->right;
             previous->right->previous = previous;
             previous->balance -= 1;
-            previous->right->upout(false);
+            previous->right->upout(false); //!!!
         }
 
         // Hat auf beiden Seiten Nachfolger
@@ -530,14 +530,20 @@ void AVLTree::Node::upout(bool leftShrinked) {
             // ******* 2.3.2
         } else if (previous->left->balance == 1) {
             previous->left->rightLeftRotation();
-            if(previous->previous != nullptr) previous->previous->upout(previous->isLeftFollower());
+            if (previous->previous != nullptr) previous->previous->upout(previous->isLeftFollower());
             else return;
             // ******* 2.3.3
         } else /*previous->left->balance == -1 */ {
             previous->left->leftRotation();
-            if(previous->previous != nullptr) previous->previous->upout(previous->isLeftFollower());
+            if (previous->previous != nullptr) previous->previous->upout(previous->isLeftFollower());
             else return;
         }
+    } else if(previous->balance == -2) {
+        previous->left->rightLeftRotation();
+        if (previous->previous != nullptr) previous->previous->upout(previous->isLeftFollower());
+    } else if(previous->balance == 2) {
+        previous->right->leftRightRotation();
+        if (previous->previous != nullptr) previous->previous->upout(previous->isLeftFollower());
     } else
         throw "Invalid upout call";
     return;
