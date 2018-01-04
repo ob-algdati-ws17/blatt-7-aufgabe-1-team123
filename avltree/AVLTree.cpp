@@ -207,8 +207,15 @@ void AVLTree::Node::leftRotation() {
         t2->previous = y;
 
     // Update balance
-    y->balance = 0;
-    this->balance = 0;
+    if (y->left != nullptr && y->right != nullptr){
+        y->balance = y->right->height() - y->left->height();
+    } else if(y->left == nullptr && y->right != nullptr){
+        y->balance =  y->right->height();
+    } else if(y->left != nullptr && y->right == nullptr){
+        y->balance = 0 - y->left->height();
+    } else y->balance = 0;
+
+    this->balance = this->right->height() - this->left->height();
 }
 
 void AVLTree::Node::rightLeftRotation() {
@@ -367,8 +374,15 @@ void AVLTree::Node::rightRotation() {
         t2->previous = y;
 
     // Update balance
-    y->balance = 0;
-    this->balance = 0;
+    if (y->left != nullptr && y->right != nullptr){
+        y->balance = y->right->height() - y->left->height();
+    } else if(y->left == nullptr && y->right != nullptr){
+        y->balance =  y->right->height();
+    } else if(y->left != nullptr && y->right == nullptr){
+        y->balance = 0 - y->left->height();
+    } else y->balance = 0;
+
+    this->balance = this->right->height() - this->left->height();
 }
 
 
@@ -424,13 +438,13 @@ void AVLTree::remove(const int value) {
         } else if (previous->left == current) {
             previous->left = current->left;
             previous->left->previous = previous;
-            previous->balance += 1;
-            previous->upout(true);
+            //previous->balance += 1;
+            previous->left->upout(true);
         } else {
             previous->right = current->left;
             previous->right->previous = previous;
-            previous->balance -= 1;
-            previous->upout(false);
+            //previous->balance -= 1;
+            previous->right->upout(false);
         }
         // Hat nur rechten Nachfolger
     } else if (current->left == nullptr && current->right != nullptr) {
@@ -440,13 +454,13 @@ void AVLTree::remove(const int value) {
         } else if (previous->left == current) {
             previous->left = current->right;
             previous->left->previous = previous;
-            previous->balance += 1;
-            previous->upout(true);
+            //previous->balance += 1;
+            previous->left->upout(true);
         } else {
             previous->right = current->right;
             previous->right->previous = previous;
-            previous->balance -= 1;
-            previous->right->upout(false); //!!!
+            //previous->balance -= 1;
+            previous->right->upout(false);
         }
 
         // Hat auf beiden Seiten Nachfolger
@@ -458,6 +472,9 @@ void AVLTree::remove(const int value) {
         }
         int keySymFollower = symFollower->key;
         remove(keySymFollower);
+
+        current = find(value);
+        previous =current->previous;
 
         auto newNode = new Node(keySymFollower, previous, current->left, current->right, this);
 
@@ -482,7 +499,7 @@ void AVLTree::remove(const int value) {
     }
     current->left = nullptr;
     current->right = nullptr;
-    delete(current);
+    //delete(current);
     return;
 }
 
@@ -508,7 +525,7 @@ void AVLTree::Node::upout(bool leftShrinked) {
         previous->balance = -1;
 
         // ******* 1.3 subtrees of previous which was already smaller, shrinkes *******
-    } else if (isLeftFollower() && previous->balance == +1) {
+    } else if (isLeftFollower() && previous->balance >= +1) {
         // ******* 1.3.1
         if (previous->right->balance == 0) {
             previous->right->rightRotation();
@@ -523,7 +540,7 @@ void AVLTree::Node::upout(bool leftShrinked) {
             if (previous->previous != nullptr) previous->previous->upout(previous->isLeftFollower());
             else return;
         }
-    } else if (!isLeftFollower() && previous->balance == -1) {
+    } else if (!isLeftFollower() && previous->balance <= -1) {
         // ******* 2.3.1
         if (previous->left->balance == 0) {
             previous->left->leftRotation();
