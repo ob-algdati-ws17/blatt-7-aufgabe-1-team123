@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['operator_3c_3c',['operator&lt;&lt;',['../class_a_v_l_tree.html#a1c2fe2fa878a3a4e7c2315ac417b2721',1,'AVLTree::operator&lt;&lt;()'],['../_a_v_l_tree_8cpp.html#af27b8a8e936a7ebca0f1febcde35e381',1,'operator&lt;&lt;():&#160;AVLTree.cpp']]]
+  ['postorder',['postorder',['../struct_a_v_l_tree_1_1_node.html#a454eee4c2a39978cac6ad528fa8925c2',1,'AVLTree::Node::postorder()'],['../class_a_v_l_tree.html#a2763d7a605209d139ee9710dc2195a27',1,'AVLTree::postorder()']]],
+  ['preorder',['preorder',['../struct_a_v_l_tree_1_1_node.html#add8cfa107c7daeca78f21a50d81afbf4',1,'AVLTree::Node::preorder()'],['../class_a_v_l_tree.html#a8a5b7f2cc3fbe2bbd5c374b0f5218c79',1,'AVLTree::preorder()']]],
+  ['previous',['previous',['../struct_a_v_l_tree_1_1_node.html#a6fe949bde76e74faf4aaeab7266f3520',1,'AVLTree::Node']]]
 ];

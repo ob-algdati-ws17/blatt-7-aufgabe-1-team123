@@ -1,6 +1,8 @@
 var searchData=
 [
-  ['postorder',['postorder',['../struct_a_v_l_tree_1_1_node.html#af02a8283c02926a3cad5564e03f01c96',1,'AVLTree::Node::postorder()'],['../class_a_v_l_tree.html#a953fe7b7d3bce08e8d266db544c03415',1,'AVLTree::postorder()']]],
-  ['preorder',['preorder',['../struct_a_v_l_tree_1_1_node.html#a682afb027a6d19f170b91eba87013c60',1,'AVLTree::Node::preorder()'],['../class_a_v_l_tree.html#a2a9e456d5db8167232a4b3bfca987abf',1,'AVLTree::preorder()']]],
-  ['previous',['previous',['../struct_a_v_l_tree_1_1_node.html#a6fe949bde76e74faf4aaeab7266f3520',1,'AVLTree::Node']]]
+  ['remove',['remove',['../class_a_v_l_tree.html#a8671295418947911e9387549116f89eb',1,'AVLTree']]],
+  ['right',['right',['../struct_a_v_l_tree_1_1_node.html#ad4cf9ab498b259eeec276f080e0bddd4',1,'AVLTree::Node']]],
+  ['rightleftrotation',['rightLeftRotation',['../struct_a_v_l_tree_1_1_node.html#aae9db9c0dd0562ba0106b6e383ad534b',1,'AVLTree::Node']]],
+  ['rightrotation',['rightRotation',['../struct_a_v_l_tree_1_1_node.html#a38475368dc4b6779e6d60ee7727a93fd',1,'AVLTree::Node']]],
+  ['root',['root',['../class_a_v_l_tree.html#a3db9914a012a92648fc774b1112c79f0',1,'AVLTree']]]
 ];

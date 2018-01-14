@@ -97,30 +97,30 @@ private:
         void upout(bool leftShrinked);
 
         /**
-         * Rotates the (sub)tree to the left so that this node will get the root of the (sub)tree.
+         * Rotates the (sub)tree to the right so that this node will get the root of the (sub)tree.
          * The rotation includes just nodes in the subtree of which the previous of this node is the root.
          */
-        void leftRotation();
+        void rightRotation();
 
         /**
-         * Rotates the (sub)tree first to the right and then to the left, so that the right follower of this node gets
-         * the root of the (sub)tree. The rotation includes just nodes in the subtree of which the previous of this node
-         * is the root.
-         */
-        void rightLeftRotation();
-
-        /**
-         * Rotates the (sub)tree first to the left and then to the right, so that the left follower of this node gets
+         * Rotates the (sub)tree first to the left and then to the right, so that the right follower of this node gets
          * the root of the (sub)tree. The rotation includes just nodes in the subtree of which the previous of this node
          * is the root.
          */
         void leftRightRotation();
 
         /**
-         * Rotates the (sub)tree to the right so that this node will get the root of the (sub)tree.
+         * Rotates the (sub)tree first to the right and then to the left, so that the left follower of this node gets
+         * the root of the (sub)tree. The rotation includes just nodes in the subtree of which the previous of this node
+         * is the root.
+         */
+        void rightLeftRotation();
+
+        /**
+         * Rotates the (sub)tree to the left so that this node will get the root of the (sub)tree.
          * The rotation includes just nodes in the subtree of which the previous of this node is the root.
          */
-        void rightRotation();
+        void leftRotation();
 
         /**
          * Returns if the current node is the root of the tree or not.
