@@ -89,6 +89,11 @@ private:
          */
         void upin(bool growedLeft);
 
+        /**
+         * Ensures that the tree is still an AVL-Tree when a node is removed. If the tree is not an AVL-Tree the
+         * necessary rotation will be executed.
+         * @param leftShrinked ture if the left subree of the node shrinked
+         */
         void upout(bool leftShrinked);
 
         /**
