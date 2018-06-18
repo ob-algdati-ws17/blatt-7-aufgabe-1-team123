@@ -6,6 +6,7 @@
 #include <sstream>
 
 #include "AVLTree.h"
+#include "treeplotter.h"
 
 using namespace std;
 
@@ -106,3 +107,4 @@ ostream &operator<<(ostream &out, const vector<T> &v) {
     out << "]";
     return out;
 }
+

@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 11)
 add_subdirectory(avltree)
 
 set(SOURCE_FILES Main.cpp)
-add_executable(Main ${SOURCE_FILES})
+add_executable(Main ${SOURCE_FILES}  )
 
 target_link_libraries(Main LINK_PUBLIC avltree)
 
@@ -36,6 +36,8 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 # and gmock_main
 add_subdirectory(${CMAKE_BINARY_DIR}/googletest-src
         ${CMAKE_BINARY_DIR}/googletest-build)
+
+#add_executable(testAVLTree ${SRCS} ../avltree/AVLTree.h ../avlTree/AVLTree.cpp ../avltree/treeplotter.h ../avltree/treeplotter.cpp)
 
 add_subdirectory(test)
 

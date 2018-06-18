@@ -1,7 +1,17 @@
 #include "testAVLTree.h"
 #include <memory>
+#include "treeplotter.h"
 
 using namespace std;
+
+TEST(AVLTreeTest, Draw_Tree) {
+    auto tree = new AVLTree();
+    tree->insert(4);
+    tree->insert(2);
+    tree->insert(8);
+    auto plotter = new treeplotter();
+    plotter->plot(tree);
+}
 
 // empty tree
 

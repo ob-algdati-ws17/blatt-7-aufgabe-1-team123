@@ -209,7 +209,7 @@ public:
 
 
     friend ostream &operator<<(ostream &, const AVLTree &);
-
+    friend class treeplotter;
     /**
      * Returns the balance factor of the node with this value.
      * @return balance factor of the node with this value, if the value exists od -1000 else.
